@@ -21,6 +21,7 @@ default_args = {
     'depends_on_past': False,
 }
 
+# dag definition
 dag = DAG('dag_no_catchup_no_past_runs',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
