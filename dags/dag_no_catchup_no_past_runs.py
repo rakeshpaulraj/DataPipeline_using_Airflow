@@ -30,6 +30,7 @@ dag = DAG('dag_no_catchup_no_past_runs',
           
         )
 
+# Dummy operator to mark start
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
 stage_events_to_redshift = StageToRedshiftOperator(
