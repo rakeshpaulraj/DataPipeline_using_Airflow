@@ -11,9 +11,6 @@ from operators.load_fact import LoadFactOperator
 from operators.load_dimension import LoadDimensionOperator
 from operators.data_quality import DataQualityOperator
 
-# AWSudacity_plugin_KEY = os.environ.get('AWS_KEY')
-# AWS_SECRET = os.environ.get('AWS_SECRET')
-
 default_args = {
     'owner': 'udacity',
     'start_date': datetime.now(),
@@ -39,12 +36,12 @@ stage_events_to_redshift = StageToRedshiftOperator(
     dag=dag,
     table="staging_events",
     s3_bucket="udacity-dend",
-    # s3_key="log_data/{execution_date.year}/{execution_date.month}/{ds}-events.json",
     # Since we are using no-catchup, no past runs setting, we cannot load based on execution date as this will duplicate data in Dimensions during multiple parallel runs.
     s3_key="log_data/2018/11/",
     s3_json_key="log_json_path.json"
 )
 
+# Custom Operator to Stage data from S3 to Redshift
 stage_songs_to_redshift = StageToRedshiftOperator(
     task_id='Stage_songs',
     dag=dag,
@@ -53,6 +50,7 @@ stage_songs_to_redshift = StageToRedshiftOperator(
     s3_key="song_data/"
 )
 
+# Custom Operator to Load songplays dimension
 load_songplays_table = LoadFactOperator(
     task_id='Load_songplays_fact_table',
     dag=dag,
@@ -60,6 +58,7 @@ load_songplays_table = LoadFactOperator(
     sql=SqlQueries.songplay_table_insert
 )
 
+# Custom Operator to Load user dimension
 load_user_dimension_table = LoadDimensionOperator(
     task_id='Load_user_dim_table',
     dag=dag,
@@ -67,6 +66,7 @@ load_user_dimension_table = LoadDimensionOperator(
     sql=SqlQueries.user_table_insert
 )
 
+# Custom Operator to Load song dimension
 load_song_dimension_table = LoadDimensionOperator(
     task_id='Load_song_dim_table',
     dag=dag,
@@ -74,6 +74,7 @@ load_song_dimension_table = LoadDimensionOperator(
     sql=SqlQueries.song_table_insert
 )
 
+# Custom Operator to Load artist dimension
 load_artist_dimension_table = LoadDimensionOperator(
     task_id='Load_artist_dim_table',
     dag=dag,
@@ -81,6 +82,7 @@ load_artist_dimension_table = LoadDimensionOperator(
     sql=SqlQueries.artist_table_insert
 )
 
+# Custom Operator to Load time dimension
 load_time_dimension_table = LoadDimensionOperator(
     task_id='Load_time_dim_table',
     dag=dag,
@@ -88,6 +90,11 @@ load_time_dimension_table = LoadDimensionOperator(
     sql=SqlQueries.time_table_insert
 )
 
+# Data Quality Operator - Used to run Data quality checks
+# The follwing Data Quality rules are checked here:
+# Tables should not be empty (Row count should not be zero)
+# There should be duplicates in users table based on user_id
+# There should be any NULL values on user_id column in users table
 run_quality_checks = DataQualityOperator(
     task_id='Run_data_quality_checks',
     dag=dag,
