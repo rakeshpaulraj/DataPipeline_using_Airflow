@@ -2,8 +2,8 @@ CREATE TABLE public.artists (
 	artistid varchar(256) NOT NULL,
 	name varchar(256),
 	location varchar(256),
-	lattitude numeric(18,0),
-	longitude numeric(18,0)
+	lattitude float,
+	longitude float
 );
 
 CREATE TABLE public.songplays (
@@ -53,8 +53,8 @@ CREATE TABLE public.staging_songs (
 	num_songs int4,
 	artist_id varchar(256),
 	artist_name varchar(256),
-	artist_latitude numeric(18,0),
-	artist_longitude numeric(18,0),
+	artist_latitude float,
+	artist_longitude float,
 	artist_location varchar(256),
 	song_id varchar(256),
 	title varchar(256),
