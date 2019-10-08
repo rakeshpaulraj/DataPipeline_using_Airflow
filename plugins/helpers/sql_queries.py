@@ -55,4 +55,8 @@ class SqlQueries:
     user_table_userid_null_check = ("""
         SELECT count(*) from users where userid is null
     """) 
+	
+	user_table_userid_numeric_check = ("""
+        SELECT count(*) from users where lower(userid) <> upper(userid)
+    """) 
     
